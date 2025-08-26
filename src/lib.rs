@@ -8,7 +8,7 @@ Currently, the following algorithms are available:
 - n-linear interpolation
 
 If more algorithms are needed, please do not hesistate to open an issue on the repository
-website: [https://github.com/StefanMathis/gridded_data]
+website: (https://github.com/StefanMathis/gridded_data)
 
 ```
 use gridded_data::GriddedData;
@@ -60,6 +60,7 @@ assert_eq!(grid2.linear_interp(&[0.5, 0.25]), 1.75);
 Unfortunately, it is currently not possible to implement this feature for arbitrary dimensions
 due to limitations within Rust itself. Therefore, manual implementations for the dimensions
 1 to 16 exist.
+
 This functionality is gated behind the `serde` feature flag.
 
 # Providing data via matrix libraries
@@ -68,7 +69,8 @@ This functionality is gated behind the `serde` feature flag.
 
 The function [`from_nalgebra_matrix`] allows to provide the data values
 for a 2-dimensional `GriddedData<2>` via a [nalgebra](https://crates.io/crates/nalgebra) matrix.
-See the function docstring for an example.s
+See the function docstring for an example.
+
 This function is gated behind the `nalgebra` feature flag.
 */
 
