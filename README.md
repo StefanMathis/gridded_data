@@ -67,5 +67,5 @@ This functionality is gated behind the `serde` feature flag.
 
 The function [`from_nalgebra_matrix`] allows to provide the data values
 for a 2-dimensional `GriddedData<2>` via a [nalgebra](https://crates.io/crates/nalgebra) matrix.
-See the function docstring for an example.s
+See the function docstring for an example.
 This function is gated behind the `nalgebra` feature flag.
