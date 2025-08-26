@@ -1,0 +1,20 @@
+[package]
+name = "gridded_data"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+cart_lin =  { version = "0.2", path = "../cart_lin" }
+nalgebra = {version = "0.32", optional = true}
+serde = { version = "1", features = ["derive"], optional = true }
+
+[features]
+default = []
+serde = ["dep:serde"]
+nalgebra = ["dep:nalgebra"]
+
+[dev-dependencies]
+approx = "0.5.1"
+indoc = "1"
+serde_yaml = {version = "*"}
+gridded_data = { path = ".", features = ["serde", "nalgebra"]}
