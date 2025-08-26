@@ -20,5 +20,5 @@ nalgebra = ["dep:nalgebra"]
 [dev-dependencies]
 approx = "0.5.1"
 indoc = "1"
-serde_yaml = {version = "*"}
+serde_yaml = {version = "0.9"}
 gridded_data = { path = ".", features = ["serde", "nalgebra"]}
