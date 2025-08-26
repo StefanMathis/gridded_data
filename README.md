@@ -7,7 +7,7 @@ Currently, the following algorithms are available:
 - n-linear interpolation
 
 If more algorithms are needed, please do not hesistate to open an issue on the repository
-website: [https://github.com/StefanMathis/gridded_data]
+website: (https://github.com/StefanMathis/gridded_data)
 
 ```rust
 use gridded_data::GriddedData;
