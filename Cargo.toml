@@ -2,6 +2,10 @@
 name = "gridded_data"
 version = "0.1.0"
 edition = "2024"
+description = "Multivariate interpolation on a regular / rectilinear grid"
+readme = "README.md"
+license  = "MIT OR Apache-2.0"
+repository = "https://github.com/StefanMathis/gridded_data.git"
 
 [dependencies]
 cart_lin =  { version = "0.2", path = "../cart_lin" }
