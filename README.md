@@ -19,7 +19,7 @@ The full API documentation is available at [https://docs.rs/gridded_data/0.1.1/g
 # Concept
 
 The [`GriddedData`] struct defines a n-dimensional grid via a corresponding number of axes. Each axis is defined as a vector of "nodes". For example, this axis
-has the three nodes 1, 2 and 5: `ax = [1, 2, 5]`. An axis vector must be strictly monotonically increasing (each node must be smaller than its successor).
+has the three nodes 1, 2 and 5: `ax = [1, 2, 5]`. An axis vector must be strictly monotonically increasing (each node must be smaller than its successor) and it must have at least two nodes.
 
 One or more axis define a grid. As an example, the three axes `x = [1, 2, 5]`; `y = [0, 1]`; `z = [-1, 3]` result in a 3-dimensional cube with 12 [vertices](https://en.wikipedia.org/wiki/Vertex_(geometry)). The grid vertices are created via the Cartesian product of the axes:
 `[1, 0, -1]`; `[1, 0, 3]`; `[1, 1, -1]`; `[1, 1, 3]` and so on.
