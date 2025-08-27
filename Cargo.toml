@@ -1,6 +1,6 @@
 [package]
 name = "gridded_data"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 description = "Multivariate interpolation on a regular / rectilinear grid"
 readme = "README.md"
@@ -20,5 +20,8 @@ nalgebra = ["dep:nalgebra"]
 [dev-dependencies]
 approx = "0.5.1"
 indoc = "1"
-serde_yaml = {version = "0.9"}
+serde_yaml = {version = "0.8"}
 gridded_data = { path = ".", features = ["serde", "nalgebra"]}
+
+[package.metadata.docs.rs]
+features = ["serde", "nalgebra"]

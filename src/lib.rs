@@ -1,83 +1,9 @@
-/*!
-A lightweight library for interpolating on a regular / rectilinear multidimensional grid.
-
-This library revolves around the struct [`GriddedData`], which stores data values on a regular /
-rectilinear grid of arbitrary dimensions. This data can then be used for [multivariate interpolation](https://en.wikipedia.org/wiki/Multivariate_interpolation).
-Currently, the following algorithms are available:
-- Nearest-neighbor interpolation
-- n-linear interpolation
-
-If more algorithms are needed, please do not hesistate to open an issue on the repository
-website: (https://github.com/StefanMathis/gridded_data)
-
-```
-use gridded_data::GriddedData;
-
-/*
-1-dimensional example:
-The underlying function is known to have the following data / node pairs:
-node : 0 1 2 3 4
-       ---------
-data:  0 2 4 2 0
-*/
-let x = vec![0.0, 1.0, 2.0, 3.0, 4.0];
-let data = vec![0.0, 2.0, 4.0, 2.0, 0.0];
-let grid1 = GriddedData::<1>::new([x], data).unwrap();
-
-// Access the data at the grid points
-assert_eq!(*grid1.get_cart(&[3]).unwrap(), 2.0);
-
-// Get values between grid points via different interpolation methods
-assert_eq!(grid1.nearest_neighbor_interp(&[0.2]), 0.0);
-assert_eq!(grid1.nearest_neighbor_interp(&[1.5]), 2.0);
-assert_eq!(grid1.linear_interp(&[0.2]), 0.4);
-assert_eq!(grid1.linear_interp(&[1.5]), 3.0);
-
-/*
-2-dimensional example:
-The underlying function is known to have the following data / node pairs (with a node defined by both its x- and y-value):
-  x 0 1 2
-y -------
-0 | 0 1 2
-1 | 3 4 5
-*/
-let x = vec![0.0, 1.0];
-let y = vec![0.0, 1.0, 2.0];
-let data = vec![0.0, 1.0, 2.0, 3.0, 4.0, 5.0];
-let grid2 = GriddedData::new([x, y], data).unwrap();
-
-// Access the data at the grid points
-assert_eq!(*grid2.get_cart(&[0, 2]).unwrap(), 2.0);
-
-// Get values between grid points via different interpolation methods
-assert_eq!(grid2.nearest_neighbor_interp(&[0.75, 0.4]), 3.0);
-assert_eq!(grid2.linear_interp(&[0.5, 0.25]), 1.75);
-```
-
-# Serialization and deserialization
-
-`GriddedData` can be serialized and deserialized via the [serde](https://crates.io/crates/serde) crate.
-Unfortunately, it is currently not possible to implement this feature for arbitrary dimensions
-due to limitations within Rust itself. Therefore, manual implementations for the dimensions
-1 to 16 exist.
-
-This functionality is gated behind the `serde` feature flag.
-
-# Providing data via matrix libraries
-
-## nalgebra integration
-
-The function [`from_nalgebra_matrix`] allows to provide the data values
-for a 2-dimensional `GriddedData<2>` via a [nalgebra](https://crates.io/crates/nalgebra) matrix.
-See the function docstring for an example.
-
-This function is gated behind the `nalgebra` feature flag.
-*/
+#![doc = include_str!("../README.md")]
 
 use cart_lin::{CartesianIndices, cart_to_lin, cart_to_lin_unchecked};
 
 #[cfg(feature = "serde")]
-mod serde;
+pub mod serde;
 
 /**
 This struct contains the N-dimensional grid data and provides interpolation methods which work on this data.
@@ -320,10 +246,10 @@ impl<const N: usize> GriddedData<N> {
     }
 
     /**
-    Returns the grid cell containing the given point.
+    Returns the cell / hypercuboid bounds containing the given point.
 
     If the given point is within the grid, this function finds the indices of the node interval of each axis which contain
-    the corresponding point value.
+    the corresponding point value. Please see the top-level documentation for a discussion of the underlying concept.
 
     # Examples
 
@@ -628,6 +554,9 @@ impl<const N: usize> std::ops::IndexMut<usize> for GriddedData<N> {
     }
 }
 
+#[cfg(feature = "nalgebra")]
+use nalgebra::{Dim, Matrix, RawStorage};
+
 impl GriddedData<2> {
     /**
     Create a 2-dimensional [`GriddedData`] using a slices-of-slices matrix as data.
@@ -677,6 +606,49 @@ impl GriddedData<2> {
 
         return Self::new(axes, vec);
     }
+
+    /**
+    Create a 2-dimensional [`GriddedData`] using a [nalgebra](https://crates.io/crates/nalgebra) matrix.
+
+    Only available with the **nalgebra** feature.
+
+    # Examples
+    ```
+    use gridded_data::GriddedData;
+    use nalgebra::Matrix2;
+
+    let row1 = [1.0, 3.0];
+    let row2 = [2.0, 4.0];
+    let data = Matrix2::from_vec(vec![1.0, 3.0, 2.0, 4.0]); // nalgebra is column-major!
+    let grid = GriddedData::from_nalgebra_matrix([vec![0.0, 1.0], vec![1.0, 2.0]], &data).expect("valid inputs");
+    assert_eq!(grid.data(), &[1.0, 2.0, 3.0, 4.0]); // The data within grid is stored row-major
+    ```
+    */
+    #[cfg(feature = "nalgebra")]
+    pub fn from_nalgebra_matrix<R: Dim, C: Dim, S: RawStorage<f64, R, C>>(
+        axes: [Vec<f64>; 2],
+        matrix: &Matrix<f64, R, C, S>,
+    ) -> Result<Self, Error> {
+        if axes[0].len() != matrix.nrows() {
+            return Err(Error(
+                "number of rows must be equal to the length of the first axis".to_string(),
+            ));
+        }
+        if axes[1].len() != matrix.ncols() {
+            return Err(Error(
+                "number of columns must be equal to the length of the second axis".to_string(),
+            ));
+        }
+
+        let mut vector = Vec::with_capacity(matrix.nrows() * matrix.ncols());
+        for row in matrix.row_iter() {
+            for value in row.iter() {
+                vector.push(*value);
+            }
+        }
+
+        return Self::new(axes, vector);
+    }
 }
 
 /**
@@ -692,51 +664,3 @@ impl std::fmt::Display for Error {
 }
 
 impl std::error::Error for Error {}
-
-#[cfg(feature = "nalgebra")]
-mod nalgebra_impl {
-    use super::*;
-    use nalgebra::{Dim, Matrix, RawStorage};
-
-    impl GriddedData<2> {
-        /**
-        Create a 2-dimensional [`GriddedData`] using a [nalgebra](https://crates.io/crates/nalgebra) matrix.
-
-        # Examples
-        ```
-        use gridded_data::GriddedData;
-        use nalgebra::Matrix2;
-
-        let row1 = [1.0, 3.0];
-        let row2 = [2.0, 4.0];
-        let data = Matrix2::from_vec(vec![1.0, 3.0, 2.0, 4.0]); // nalgebra is column-major!
-        let grid = GriddedData::from_nalgebra_matrix([vec![0.0, 1.0], vec![1.0, 2.0]], &data).expect("valid inputs");
-        assert_eq!(grid.data(), &[1.0, 2.0, 3.0, 4.0]); // The data within grid is stored row-major
-        ```
-        */
-        pub fn from_nalgebra_matrix<R: Dim, C: Dim, S: RawStorage<f64, R, C>>(
-            axes: [Vec<f64>; 2],
-            matrix: &Matrix<f64, R, C, S>,
-        ) -> Result<Self, Error> {
-            if axes[0].len() != matrix.nrows() {
-                return Err(Error(
-                    "number of rows must be equal to the length of the first axis".to_string(),
-                ));
-            }
-            if axes[1].len() != matrix.ncols() {
-                return Err(Error(
-                    "number of columns must be equal to the length of the second axis".to_string(),
-                ));
-            }
-
-            let mut vector = Vec::with_capacity(matrix.nrows() * matrix.ncols());
-            for row in matrix.row_iter() {
-                for value in row.iter() {
-                    vector.push(*value);
-                }
-            }
-
-            return Self::new(axes, vector);
-        }
-    }
-}
