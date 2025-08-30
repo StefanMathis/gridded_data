@@ -25,9 +25,9 @@ One or more axis define a grid. As an example, the three axes `x = [1, 2, 5]`; `
 `[1, 0, -1]`; `[1, 0, 3]`; `[1, 1, -1]`; `[1, 1, 3]` and so on.
 
 The individual grid vertices form n-dimensional hypercuboids which are called "cells". These can be identified via the n index pairs of the axes.
-The index pairs `[1, 2], [0, 1], [0, 1]` identify the hypercuboid formed by the vertices `[2, 0, -1]`; `[2, 0, 3]`; `[2, 1, -1]`; `[2, 1, 3]`; `[5, 0, -1]`; `[5, 0, 3]`; `[5, 1, -1]`; `[5, 1, 3]`. The method [``GriddedData::cell_bounds`](https://docs.rs/gridded_data/0.1.1/gridded_data/struct.GriddedData.html#method.cell_bounds) can be used to find the index pairs of cells.
+The index pairs `[1, 2], [0, 1], [0, 1]` identify the hypercuboid formed by the vertices `[2, 0, -1]`; `[2, 0, 3]`; `[2, 1, -1]`; `[2, 1, 3]`; `[5, 0, -1]`; `[5, 0, 3]`; `[5, 1, -1]`; `[5, 1, 3]`. The method [`GriddedData::cell_bounds`](https://docs.rs/gridded_data/0.1.1/gridded_data/struct.GriddedData.html#method.cell_bounds) can be used to find the index pairs of cells.
 
-For each vertex, a corresponding value needs to be given during the construction of [`GriddedData`]. This is done via a `data` vector which provides the data in [row-major order](https://en.wikipedia.org/wiki/Row-_and_column-major_order). For the three-dimensional grid defined above, `data` therefore needs 12 entries, e.g.: `data = [1, 2, ..., 11, 12]`.
+For each vertex, a corresponding value needs to be given during the construction of [`GriddedData`]. This is done via a `data` vector which provides the data in [row-major order](https://en.wikipedia.org/wiki/Row-_and_column-major_order). For the three-dimensional grid defined above, `data` therefore needs 12 entries, e.g.: `data = [1, 2, ..., 11, 12]`. Examples can be found in the docstring of [`GriddedData::new`](https://docs.rs/gridded_data/0.1.1/gridded_data/struct.GriddedData.html#method.new)
 
 This results in the following vertex–value pairs:
 | Vertex      | Data value |
@@ -44,7 +44,7 @@ For interpolation purposes, the data values are treated as the output of an unde
 
 This section contains some examples on how to use [`GriddedData`] for inter- and extrapolation:
 
-```
+```rust
 use gridded_data::GriddedData;
 
 /*

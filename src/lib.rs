@@ -33,14 +33,14 @@ impl<const N: usize> GriddedData<N> {
         1.0 3.0 5.0
         2.0 4.0 6.0
         ```
-        is represented by `data = [1.0 3.0 5.0 2.0 4.0 6.0]` (first dimension is the row number, second one the column number).
+        is represented by `data = [1.0, 3.0, 5.0, 2.0, 4.0, 6.0]` (first dimension is the row number, second one the column number).
 
     - The 3D-matrix (| denotes a page / 3rd dimension separator)
         ```text
         1.0 3.0 5.0 | 7.0  9.0 11.0
         2.0 4.0 6.0 | 8.0 10.0 12.0
         ```
-        is represented by `data = [1.0 7.0 3.0 9.0 5.0 11.0 2.0 8.0 4.0 10.0 6.0 12.0]`
+        is represented by `data = [1.0, 7.0, 3.0, 9.0, 5.0, 11.0, 2.0, 8.0, 4.0, 10.0, 6.0, 12.0]`
         (first dimension is the row number, second one the column number, third one the page number).
 
     # Examples
@@ -64,8 +64,10 @@ impl<const N: usize> GriddedData<N> {
     assert!(GriddedData::new([x, y, z], data).is_ok());
     ```
 
-    If the data is available in matrix form, consider using the `CartesianIndices` iterator from the [`cart_lin`](https://crates.io/crates/cart_lin)
-    library (which is a dependency of this library anyway):
+    If the data is available in matrix form, consider using the
+    [`CartesianIndices`](https://docs.rs/cart_lin/0.2.1/cart_lin/struct.CartesianIndices.html)
+    iterator from the [`cart_lin`](https://crates.io/crates/cart_lin)
+    library (which is a dependency of this library):
 
     ```
     use cart_lin::CartesianIndices;
