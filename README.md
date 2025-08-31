@@ -88,7 +88,7 @@ assert_eq!(grid2.nearest_neighbor_interp(&[0.75, 0.4]), 3.0);
 assert_eq!(grid2.linear_interp(&[0.5, 0.25]), 1.75);
 ```
 
-# Crate features
+# Feature flags
 
 All features are disabled by default.
 
