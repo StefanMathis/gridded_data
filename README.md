@@ -3,7 +3,7 @@ gridded_data
 
 A lightweight library for interpolating on a regular / rectilinear multidimensional grid.
 
-[`GriddedData`]: https://docs.rs/gridded_data/0.1.1/gridded_data/struct.GriddedData.html
+[`GriddedData`]: https://docs.rs/gridded_data/0.1.2/gridded_data/struct.GriddedData.html
 
 This library revolves around the struct [`GriddedData`], which stores data values on a regular /
 rectilinear grid of arbitrary dimensions. This data can then be used for [multivariate interpolation](https://en.wikipedia.org/wiki/Multivariate_interpolation).
@@ -99,7 +99,7 @@ Unfortunately, it is currently not possible to implement this feature for arbitr
 due to limitations within Rust itself. Therefore, manual implementations for the dimensions
 1 to 16 exist.
 
-This functionality is gated behind the **serde** feature flag.
+This functionality is gated behind the `serde` feature flag.
 
 ## Providing data via matrix libraries
 
@@ -109,4 +109,4 @@ The function [`from_nalgebra_matrix`]() allows to provide the data values
 for a 2-dimensional `GriddedData<2>` via a [nalgebra](https://crates.io/crates/nalgebra) matrix.
 See the function docstring for an example.
 
-This function is gated behind the **nalgebra** feature flag.
+This function is gated behind the `nalgebra` feature flag.

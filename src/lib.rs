@@ -3,10 +3,15 @@
 use cart_lin::{CartesianIndices, cart_to_lin, cart_to_lin_unchecked};
 
 #[cfg(feature = "serde")]
-pub mod serde;
+pub mod serde_impl;
 
 /**
 This struct contains the N-dimensional grid data and provides interpolation methods which work on this data.
+
+# Features
+
+This struct can be serialized / deserialized if the `serde` feature is enabled.
+See the docstring of the [`serde_impl`] module.
  */
 #[derive(Debug, Clone)]
 pub struct GriddedData<const N: usize> {
@@ -612,8 +617,6 @@ impl GriddedData<2> {
     /**
     Create a 2-dimensional [`GriddedData`] using a [nalgebra](https://crates.io/crates/nalgebra) matrix.
 
-    Only available with the **nalgebra** feature.
-
     # Examples
     ```
     use gridded_data::GriddedData;
@@ -623,8 +626,12 @@ impl GriddedData<2> {
     let row2 = [2.0, 4.0];
     let data = Matrix2::from_vec(vec![1.0, 3.0, 2.0, 4.0]); // nalgebra is column-major!
     let grid = GriddedData::from_nalgebra_matrix([vec![0.0, 1.0], vec![1.0, 2.0]], &data).expect("valid inputs");
-    assert_eq!(grid.data(), &[1.0, 2.0, 3.0, 4.0]); // The data within grid is stored row-major
+    assert_eq!(grid.data(), &[1.0, 2.0, 3.0, 4.0]); // The data within grid is stored row-major.
     ```
+
+    # Features
+
+    Only available if the `nalgebra` feature is enabled.
     */
     #[cfg(feature = "nalgebra")]
     pub fn from_nalgebra_matrix<R: Dim, C: Dim, S: RawStorage<f64, R, C>>(
