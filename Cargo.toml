@@ -18,7 +18,7 @@ serde = ["dep:serde"]
 nalgebra = ["dep:nalgebra"]
 
 [dev-dependencies]
-approx = "0.5.1"
+approx = { package = "approxim", version = "0.6" }
 indoc = "1"
 serde_yaml = {version = "0.8"}
 gridded_data = { path = ".", features = ["serde", "nalgebra"]}
