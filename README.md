@@ -21,9 +21,6 @@ Currently, the following algorithms are available:
 - Nearest-neighbor interpolation
 - n-linear interpolation
 
-The full API documentation is available at
-[https://docs.rs/gridded_data/0.1.1/gridded_data/](https://docs.rs/gridded_data/0.1.1/gridded_data/).
-
 # Concept
 
 The [`GriddedData`] struct defines a n-dimensional grid via a corresponding
