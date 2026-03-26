@@ -1,8 +1,12 @@
 gridded_data
 ============
 
+[![Documentation](https://docs.rs/gridded_data/badge.svg)](https://docs.rs/gridded_data)
+
 A lightweight library for interpolating on a regular / rectilinear
 multidimensional grid.
+
+The full API documentation is available at https://docs.rs/gridded_data/0.1.2/gridded_data.
 
 > **Feedback welcome!**  
 > Found a bug, missing docs, or have a feature request?  
