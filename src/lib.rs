@@ -1,4 +1,14 @@
-#![doc = include_str!("../README.md")]
+/*!
+[`GriddedData`]: crate::GriddedData
+[`GriddedData::new`]: crate::GriddedData::new
+[`GriddedData::cell_bounds`]: crate::GriddedData::cell_bounds
+
+A lightweight library for interpolating on a regular / rectilinear
+multidimensional grid.
+
+ */
+#![doc = include_str!("../docs/main.md")]
+#![deny(missing_docs)]
 
 use cart_lin::{CartesianIndices, cart_to_lin, cart_to_lin_unchecked};
 
@@ -6,7 +16,8 @@ use cart_lin::{CartesianIndices, cart_to_lin, cart_to_lin_unchecked};
 pub mod serde_impl;
 
 /**
-This struct contains the N-dimensional grid data and provides interpolation methods which work on this data.
+This struct contains the N-dimensional grid data and provides interpolation
+methods which work on this data.
 
 # Features
 
@@ -333,7 +344,8 @@ impl<const N: usize> GriddedData<N> {
      */
     pub fn contains(&self, point: &[f64; N]) -> bool {
         return self.axes().iter().zip(point.iter()).all(|(axis, val)| {
-            // SAFETY: axis has at least one element -> This is checked in the grid constructor
+            // SAFETY: axis has at least one element -> This is checked in the grid
+            // constructor
             unsafe {
                 axis.first().unwrap_unchecked() <= val && axis.last().unwrap_unchecked() >= val
             }
@@ -376,7 +388,8 @@ impl<const N: usize> GriddedData<N> {
     pub fn nearest_neighbor_interp(&self, point: &[f64; N]) -> f64 {
         let mut cell_bounds = self.cell_bounds_raw(point);
 
-        // CartesianIndices::from_bounds_unchecked expects a half-open interval, hence we need to add 1 to the upper limits
+        // CartesianIndices::from_bounds_unchecked expects a half-open interval, hence
+        // we need to add 1 to the upper limits
         add_one_to_upper(&mut cell_bounds);
 
         // Temporary buffer for the current corner point
@@ -415,7 +428,8 @@ impl<const N: usize> GriddedData<N> {
             }
         }
 
-        // SAFETY: The closest corner point is one of the cell corner points and therefore exists for sure.
+        // SAFETY: The closest corner point is one of the cell corner points and
+        // therefore exists for sure.
         return unsafe { *self.get_cart_unchecked(&closest_corner_point) };
     }
 
@@ -471,15 +485,17 @@ impl<const N: usize> GriddedData<N> {
         // Calculate the denominator [ (a2-a1) * (b2-b1) * ... (n2-n1) ]
         let mut denominator = 1.0;
         for (limit, axis) in cell_bounds.iter().zip(self.axes()) {
-            // SAFETY: the function contains checked that all dimensions of point are inside the grid.
-            // This also makes sure that the bracket value is always positive, since limit[0] < limit[1]
-            // and the axis is strictly monotonic increasing.
+            // SAFETY: the function contains checked that all dimensions of point are inside
+            // the grid. This also makes sure that the bracket value is always
+            // positive, since limit[0] < limit[1] and the axis is strictly
+            // monotonic increasing.
             let lower = unsafe { *axis.get_unchecked(limit[0]) };
             let upper = unsafe { *axis.get_unchecked(limit[1]) };
             denominator = denominator * (upper - lower);
         }
 
-        // CartesianIndices::from_bounds_unchecked expects a half-open interval, hence we need to add 1 to the upper limits
+        // CartesianIndices::from_bounds_unchecked expects a half-open interval, hence
+        // we need to add 1 to the upper limits
         let mut adj_cell_bounds = cell_bounds.clone();
         add_one_to_upper(&mut adj_cell_bounds);
 
@@ -498,7 +514,8 @@ impl<const N: usize> GriddedData<N> {
                         + limit[1] * usize::from(*corner == limit[0]);
                 });
 
-            // SAFETY: grid_corner is generated from cell_bounds which is fully inside the grid.
+            // SAFETY: grid_corner is generated from cell_bounds which is fully inside the
+            // grid.
             let mut product = unsafe { *self.get_cart_unchecked(&grid_corner) };
 
             // Calculate the bracket values
@@ -509,7 +526,8 @@ impl<const N: usize> GriddedData<N> {
                 .zip(self.axes().iter())
             {
                 // If this is true, we need to calculate (x2-x), otherwise (x-x1)
-                // SAFETY: All indices of cell_bounds are guaranteed to be in bounds for their respective axis.
+                // SAFETY: All indices of cell_bounds are guaranteed to be in bounds for their
+                // respective axis.
                 if *corner_idx == limit[0] {
                     product = product * (unsafe { axis.get_unchecked(limit[1]) } - *pt_val);
                 } else {
@@ -605,8 +623,9 @@ impl GriddedData<2> {
         let mut vec = Vec::with_capacity(length_first_axis * length_second_axis);
         for first in 0..length_first_axis {
             for second in 0..length_second_axis {
-                // SAFETY: We checked before that the length of the outer slice is equal to length_second_axis
-                // and that the length of each inner slice is equal to length_first_axis
+                // SAFETY: We checked before that the length of the outer slice is equal to
+                // length_second_axis and that the length of each inner slice is
+                // equal to length_first_axis
                 vec.push(unsafe { *data.get_unchecked(second).get_unchecked(first) });
             }
         }
