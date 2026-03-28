@@ -1,6 +1,6 @@
 > **Feedback welcome!**  
 > Found a bug, missing docs, or have a feature request?  
-> Please open an issue on GitHub.
+> Please open an issue on [GitHub](https://github.com/StefanMathis/gridded_data.git).
 
 This library revolves around the struct [`GriddedData`], which stores data
 values on a regular / rectilinear grid of arbitrary dimensions. This data can
